@@ -1,0 +1,76 @@
+
+#include <Valvule.h>
+#include <scheduler.h>
+
+//********************************************************************************************************************************************
+//***********************************************************== VARIABLES ==******************************************************************
+//********************************************************************************************************************************************
+Valvule_t Valvule;
+
+//********************************************************************************************************************************************
+//***********************************************************== VALVULE INIT ==***************************************************************
+//********************************************************************************************************************************************
+void ValvuleInit(void){
+
+	taskSetState(TASK_CONTROL_VALVULE, TASK_GO);
+
+}
+
+//********************************************************************************************************************************************
+//***********************************************************== VALVULE TASK ==***************************************************************
+//********************************************************************************************************************************************
+
+void ValvuleTask(void){
+
+	if(Valvule.StateValvules == Valvule1_ON){
+
+		DIGITAL_IO_SetOutputHigh(&LED1);
+		DIGITAL_IO_SetOutputHigh(&VAL1);
+
+		DIGITAL_IO_SetOutputLow(&LED2);
+		DIGITAL_IO_SetOutputLow(&VAL2);
+		Valvule.StateValvules = Valvule1_2_ON;
+
+		taskSetState(TASK_CONTROL_VALVULE, TASK_3_8S);
+
+	}
+
+	else if(Valvule.StateValvules == Valvule1_2_ON){
+
+		DIGITAL_IO_SetOutputHigh(&LED1);
+		DIGITAL_IO_SetOutputHigh(&VAL1);
+
+		DIGITAL_IO_SetOutputHigh(&LED2);
+		DIGITAL_IO_SetOutputHigh(&VAL2);
+
+		Valvule.StateValvules = Valvule2_ON;
+
+		taskSetState(TASK_CONTROL_VALVULE, TASK_0_75S);
+
+	}
+
+	else if(Valvule.StateValvules == Valvule2_ON){
+
+		DIGITAL_IO_SetOutputLow(&LED1);
+		DIGITAL_IO_SetOutputLow(&VAL1);
+
+		DIGITAL_IO_SetOutputHigh(&LED2);
+		DIGITAL_IO_SetOutputHigh(&VAL2);
+		Valvule.StateValvules = Valvule2_1_ON;
+
+		taskSetState(TASK_CONTROL_VALVULE, TASK_3_8S);
+	}
+
+	else if(Valvule.StateValvules == Valvule2_1_ON){
+
+		DIGITAL_IO_SetOutputHigh(&LED1);
+		DIGITAL_IO_SetOutputHigh(&VAL1);
+
+	    DIGITAL_IO_SetOutputHigh(&LED2);
+		DIGITAL_IO_SetOutputHigh(&VAL2);
+
+		Valvule.StateValvules = Valvule1_ON;
+		taskSetState(TASK_CONTROL_VALVULE, TASK_0_75S);
+	}
+
+}
